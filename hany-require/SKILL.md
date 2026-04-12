@@ -31,7 +31,7 @@ version: "1.1"
 
 ## 需求文档规范
 
-> **必读**：本文档产出的需求文档格式规范详见 `hany-require/requirements/SKILL-002-需求文档模板.md`。
+> **必读**：本文档产出的需求文档格式规范详见 `hany-require/requirements/需求文档模板.md`。
 >
 > 关键规则：
 > - Step 9 写入：路径 `docs/hany/requirements/YYYY-MM-DD-<主题>.md`

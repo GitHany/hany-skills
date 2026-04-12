@@ -34,7 +34,7 @@ version: "1.2"
 
 ## 需求文档规范
 
-> **必读**：本文档引用的需求文档格式规范详见 `hany-auto/requirements/SKILL-002-需求文档模板.md`。
+> **必读**：本文档引用的需求文档格式规范详见 `hany-auto/requirements/需求文档模板.md`。
 >
 > 关键规则：
 > - Step 2 阶段：需求文档写入 `docs/hany/requirements/`，摘要引用路径
