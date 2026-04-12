@@ -106,6 +106,83 @@ created: [日期]
 - 需求澄清完成后写入 `docs/hany/requirements/`
 - 使用 `AskUserQuestion` 确认写入
 
+## Skill 协同规范
+
+### hany-auto 与 hany-require 的需求文档协同
+
+| 阶段 | Skill | 产出 |
+|------|-------|------|
+| Step 2 | hany-require | 需求文档 `docs/hany/requirements/` |
+| Step 2.4 | hany-auto | 摘要压缩，引用需求文档路径 |
+| Step 4.4 | hany-auto | 归档汇总，引用需求文档路径 |
+
+### 拆分规则（hany-require Step 4）
+
+需求涉及多个子系统时：
+- 每个子系统生成独立需求文档：`docs/hany/requirements/YYYY-MM-DD-<主题>-<子系统>.md`
+- 命名格式：`2026-04-12-用户模块-认证.md`、`2026-04-12-用户模块-权限.md`
+
+### 摘要格式（hany-auto Step 2.4）
+
+```markdown
+[require 摘要] 需求：[一句话描述]。需求文档：docs/hany/requirements/XXX.md。选中方案：[方案名]。歧义评分：[最终综合分]。待澄清：[剩余标记数]。
+```
+
+### 快速路径（hany-auto 简化流程）
+
+简单任务走快速路径时：
+- 需求文档可简化为 YAML frontmatter + 一句话目标 + 核心约束
+- 但必须保留歧义评分和选中方案
+
+---
+
+## 各 Skill 产出要求
+
+### hany-require 需求文档产出（Step 9）
+
+| 检查项 | 要求 |
+|--------|------|
+| 路径 | `docs/hany/requirements/YYYY-MM-DD-<主题>.md` |
+| status | 初始 `in_progress`，完成后 `completed` |
+| 歧义评分 | 必须 < 30% 才能写入 |
+| [NEEDS CLARIFICATION] | 写入前必须全部消除 |
+| 示例原型 | Step 10 产出作为附录附在文档末尾 |
+
+### hany-auto 需求文档引用（Step 2.4 & 4.4）
+
+| 检查项 | 要求 |
+|--------|------|
+| Step 2.4 | 摘要中必须引用需求文档路径 |
+| Step 4.4 | 归档中必须列出需求文档路径 |
+| 恢复检查 | Step 0 前检查是否存在 `in_progress` 状态文档 |
+
+### 快速路径需求文档简化版
+
+```markdown
+---
+status: in_progress
+author: hany
+version: "1.0"
+created: 2026-04-12
+---
+
+# [主题名称]
+
+## 目标
+[一句话]
+
+## 约束
+- [约束1]
+
+## 选中方案
+[方案名 + 理由]
+
+## 歧义评分
+| 维度 | 评分 |
+|------|------|
+| 综合 | X% |
+```
+
 ## 归档
 
 完成后将 `status: in_progress` 更新为 `status: completed`。

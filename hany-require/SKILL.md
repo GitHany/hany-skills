@@ -29,6 +29,17 @@ version: "1.1"
 
 > **编码约束**：读取 `hany-rules/SKILL.md`，11 条规则全程生效。
 
+## 需求文档规范
+
+> **必读**：本文档产出的需求文档格式规范详见 `docs/hany/requirements/SKILL-002-需求文档模板.md`。
+>
+> 关键规则：
+> - Step 9 写入：路径 `docs/hany/requirements/YYYY-MM-DD-<主题>.md`
+> - status 标记：初始 `in_progress`，完成后 `completed`
+> - 歧义评分：必须 < 30% 才能写入
+> - [NEEDS CLARIFICATION]：写入前必须全部消除
+> - 拆分规则：多子系统独立文档 `YYYY-MM-DD-<主题>-<子系统>.md`
+
 ## 概览（必读）
 
 > **[按需加载]** 本文件包含完整步骤手册。执行时：
