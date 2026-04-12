@@ -1,8 +1,8 @@
 ---
 name: hany-auto
-description: "自动化编排。触发：/hany:auto。根据用户描述自动调用 hany-require → hany-implement → hany-verify，渐进式加载+验证修复循环。"
+description: "自动化编排。触发：/hany:auto。根据用户描述自动调用 hany-require → hany-implement → hany-verify-small，渐进式加载+验证修复循环。"
 author: hany
-version: "1.1"
+version: "1.2"
 ---
 
 # hany-auto — 自动化编排
@@ -11,7 +11,7 @@ version: "1.1"
 
 > **核心原则：用户给一个描述，自动走完需求确认→实现→验证全流程。渐进式加载 skill 减少上下文膨胀。关键节点汇报，用户可随时介入。**
 
-**快速路径**：简单任务自动判断复杂度后走 minimal 模式。具体步骤：`Step 0→1→2(require: Step 0→1简化→5→10→11)→2.5确认→3(implement: Step 0→1→3→4→7→8→10→11)→3.5确认→4(verify: Step 0→1→2→5→8→9→11)→4.4`。跳过 Constitutional 门禁、计划自检、安全检查、回归验证和边界检查。
+**快速路径**：简单任务自动判断复杂度后走 minimal 模式。具体步骤：`Step 0→1→2(require: Step 0→1简化→5→10→11)→2.5确认→3(implement: Step 0→1→3→4→7→8→10→11)→3.5确认→4(verify-small: Step 0→1→2→3→4)→4.4`。跳过 Constitutional 门禁、计划自检、安全检查、回归验证和边界检查。
 
 ## 强制交互规则
 
@@ -48,7 +48,7 @@ version: "1.1"
 | Step 0-1 | — | 直接执行 | AskUserQuestion |
 | Step 2 | hany-require | SUMMARY.md → 按需读 SKILL.md | 2.5 过渡确认 |
 | Step 3 | hany-implement | SUMMARY.md → 按需读 SKILL.md | 3.5 过渡确认 |
-| Step 4 | hany-verify | SUMMARY.md → 按需读 SKILL.md | 最终确认 |
+| Step 4 | hany-verify-small | 直接加载 | 最终确认 |
 
 ### 子 skill 文件路径参考
 
@@ -56,7 +56,8 @@ version: "1.1"
 |----------|---------|---------|
 | hany-require | `hany-require/SUMMARY.md` | `hany-require/SKILL.md` |
 | hany-implement | `hany-implement/SUMMARY.md` | `hany-implement/SKILL.md` |
-| hany-verify | `hany-verify/SUMMARY.md` | `hany-verify/SKILL.md` |
+| hany-verify-small | —（直接加载） | `hany-verify-small/SKILL.md` |
+| hany-verify-project | `hany-verify-project/SUMMARY.md` | `hany-verify-project/SKILL.md` |
 | hany-rules | —（太短，直接读） | `hany-rules/SKILL.md` |
 
 ## 恢复检查
@@ -66,7 +67,7 @@ version: "1.1"
 ## 工作流程
 
 ```
-触发 → 恢复检查 → 先想想看 → 解析用户描述 → 渐进式加载skill → 阶段1：hany-require → 汇报→确认 → 阶段2：hany-implement → 汇报→确认 → 阶段3：hany-verify（含验证修复循环） → 汇报 → 最终确认
+触发 → 恢复检查 → 先想想看 → 解析用户描述 → 渐进式加载skill → 阶段1：hany-require → 汇报→确认 → 阶段2：hany-implement → 汇报→确认 → 阶段3：hany-verify-small → 汇报 → 最终确认
 ```
 
 **进度指示**：全流程和每个阶段都显示百分比进度。
@@ -165,19 +166,18 @@ implement 阶段完成后，用 3 行摘要替代详细内容：
 
 ---
 
-## Step 4：阶段 3 — 渐进式加载 hany-verify（含验证修复循环） [进度 75-95%]
+## Step 4：阶段 3 — 渐进式加载 hany-verify-small [进度 75-95%]
 
 ### 4.1 加载
 
 ```
-先读 `hany-verify/SUMMARY.md`（~300 token）了解全局。
-然后进入 Step N 时，用 Read(offset/limit) 跳读 `hany-verify/SKILL.md` 对应章节。
-⚠️ 禁止一次性读取整个 SKILL.md。Verify 阶段完成后，用 3 行摘要替代。
+直接加载 `hany-verify-small/SKILL.md`（~100 token）。
+Verify 阶段完成后，用 3 行摘要替代。
 ```
 
-### 4.2 自动执行 + 验证修复循环
+### 4.2 自动执行
 
-按 hany-verify 完整流程执行。**关键：不是单次验证，而是循环验证。**
+按 hany-verify-small 完整流程执行。
 
 ### 4.3 拆分后的并行处理
 
@@ -225,7 +225,7 @@ implement 阶段完成后，用 3 行摘要替代详细内容：
 |------|---------|-----------|------|
 | Step 2 (require) | SUMMARY.md（~300 token） | 按需读 SKILL.md 对应章节 | 完成后用 3 行摘要替代 |
 | Step 3 (implement) | SUMMARY.md（~300 token） | 按需读 SKILL.md 对应章节 | 完成后用 3 行摘要替代 |
-| Step 4 (verify) | SUMMARY.md（~300 token） | 按需读 SKILL.md 对应章节 | - |
+| Step 4 (verify) | 直接加载（~100 token） | 直接加载 SKILL.md | - |
 
 > **Token 优化**：每个阶段先加载 ~300 token 的摘要文件，仅在执行具体步骤时按需读取完整 SKILL.md 的对应章节。对比之前的"读取完整 SKILL.md 注入上下文"方案，初始加载从 ~9000 token 降到 ~900 token，减少约 90%。
 
