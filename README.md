@@ -1,49 +1,104 @@
 # hany-skills
 
-Claude Code 自定义技能集，实现结构化的多阶段软件开发工作流。
+结构化的多阶段软件开发技能集，让 AI 遵循"需求确认 → 详细实现 → 验证修复"的顺序工作，减少返工和遗漏。
 
-## 工作流程
+## 快速开始
+
+```bash
+# 1. 描述你的任务
+你：帮我加一个用户登录功能
+
+# 2. 触发编排器，自动走完全流程
+/hany:auto
+
+# 3. 每个阶段结束后确认，AI 逐步推进
+```
+
+## 整体架构
 
 ```
 用户描述任务
-    │
-/hany:auto（编排器）
-    │
-    ├── /hany:require   → 需求文档 + 原型
-    ├── /hany:implement → 计划文档 + 代码实现
-    └── /hany:verify    → 验证报告 + 修复
+        │
+   /hany:auto
+        │
+        ├─→ /hany:require  ──→ 需求文档 + 示例原型
+        │                        docs/hany/requirements/YYYY-MM-DD-<主题>.md
+        │
+        ├─→ /hany:implement ──→ 计划文档 + 代码实现
+        │                        docs/hany/plans/YYYY-MM-DD-<主题>.md
+        │
+        └─→ /hany:verify-*  ──→ 验证报告 + 修复
+                                 docs/hany/archive/YYYY-MM-DD-<主题>.md
 ```
 
-每个阶段之间有确认门控，产出物存档至 `docs/hany/`。
+## 技能一览
 
-## 技能说明
+| 技能 | 触发方式 | 说明 | 输出物 |
+|------|---------|------|--------|
+| **hany-auto** | `/hany:auto` | 主编排器，串联三阶段。渐进式加载子 skill，关键节点暂停确认 | — |
+| **hany-require** | `/hany:require` | 需求确认。多轮提问 + 歧义评分，输出可行方案 | `docs/hany/requirements/*.md` |
+| **hany-implement** | `/hany:implement` | 详细实现。PRD 拆解 + Agent 并行，验证后提交 | `docs/hany/plans/*.md` + 代码 |
+| **hany-verify-small** | `/hany:verify-small` | 小改动验证。编译 + 功能 + 修复确认 | `docs/hany/archive/*.md` |
+| **hany-verify-project** | `/hany:verify-project` | 项目级验证。多视角并行审查 + 回归测试 | `docs/hany/archive/*.md` |
+| **hany-rules** | 自动加载 | 11 条共享编码规则，全程生效 | — |
 
-| 技能 | 触发方式 | 说明 |
-|------|---------|------|
-| **hany-auto** | `/hany:auto` | 主编排器，串联 require → implement → verify 三阶段，支持渐进式加载和断点续跑 |
-| **hany-require** | `/hany:require` | 需求确认 + 原型。多轮深度访谈式提问，歧义评分，输出需求文档和可运行原型 |
-| **hany-implement** | `/hany:implement` | 详细实现。拆解任务为用户故事，并行 Agent 执行，完成后验证并提交 |
-| **hany-verify** | `/hany:verify` | 多视角验证。架构/安全/代码质量并行审查，verify→fix 循环直到全部通过 |
-| **hany-rules** | 自动加载 | 11 条共享编码规则，贯穿所有阶段 |
+## 适用场景
 
-## 配置
+| 适合 | 不适合 |
+|------|--------|
+| 新功能开发（从小功能到多子系统） | 纯搜索/研究任务（无代码产出） |
+| Bug 修复（有验证闭环） | 单次问答（直接问就行） |
+| 文档/配置改进（有产出物） | 紧急 hotfix（直接改，跳流程） |
+| 重构（有计划有验证） | |
 
-`.hany/config.json` 控制质量模式：
+## 质量模式
+
+`.hany/config.json` 控制严格程度：
 
 ```json
-{
-  "quality": "standard",
-  "version": "1.1"
-}
+{ "quality": "standard" }
 ```
 
-- `strict` — 严格模式，完整验证流程
-- `standard` — 标准模式（默认）
-- `minimal` — 最小模式，跳过非关键步骤
+| 模式 | 歧义容忍 | 验证轮次 | 适用 |
+|------|---------|---------|------|
+| **minimal** | 30% | 1 轮 | 简单改动、快速验证 |
+| **standard**（默认） | 20% | 3 轮 | 大部分场景 |
+| **strict** | 10% | 不限 | 重要功能、架构变更 |
+
+## 目录结构
+
+```
+hany-skills/
+├── hany-auto/           # 主编排器
+├── hany-require/       # 需求阶段
+├── hany-implement/     # 实现阶段
+├── hany-verify-small/   # 小改动验证
+├── hany-verify-project/ # 项目级验证
+├── hany-rules/          # 共享编码规则
+└── README.md
+```
+
+## 产出物路径
+
+所有产出物统一在项目根目录的 `docs/hany/` 下：
+
+```
+docs/hany/
+├── requirements/        # 需求文档 + 示例原型
+├── plans/               # 计划文档 + 任务拆解
+└── archive/             # 验证报告 + 问题记录
+```
 
 ## 安装
 
-将项目目录添加为 Claude Code 的 skills 目录即可使用。
+将本目录添加为 Claude Code 的 skills 目录：
+
+```bash
+# 在 claude_code_settings.json 中添加
+"skills": {
+  "dirs": ["path/to/hany-skills"]
+}
+```
 
 ## License
 
