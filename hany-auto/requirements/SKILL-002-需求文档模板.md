@@ -87,9 +87,10 @@ created: [日期]
 
 ## 存储路径
 
-- 路径：`docs/hany/requirements/YYYY-MM-DD-<主题>.md`
+- 路径：`{项目根目录}/docs/hany/requirements/YYYY-MM-DD-<主题>.md`
 - 命名规范：日期-简短主题描述
 - 示例：`docs/hany/requirements/2026-04-12-skill-002-需求文档规范.md`
+- 模板文件位置：`hany-auto/requirements/SKILL-002-需求文档模板.md`
 
 ## 质量标准
 
@@ -103,7 +104,7 @@ created: [日期]
 ## 触发时机
 
 根据 `hany-require/SKILL.md` Step 9：
-- 需求澄清完成后**自动写入** `docs/hany/requirements/`
+- 需求澄清完成后**自动写入** `{项目根目录}/docs/hany/requirements/`
 - 无需确认，直接写入后输出摘要
 
 ## Skill 协同规范
