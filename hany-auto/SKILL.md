@@ -13,11 +13,6 @@ version: "1.3"
 
 **快速路径**：简单任务自动判断复杂度后走 minimal 模式。具体步骤：`Step 0→1→2(require)→2.5(planreview: 简单任务跳过)→2.7确认→3(implement)→3.5确认→4(智能验证路由)→4.6`。跳过 Constitutional 门禁、计划自检、安全检查、回归验证和边界检查。
 
-**验证路由**：`Step 4` 根据变更范围自动选择：
-- `verify-project`：多文件/架构变更/新模块 → 完整验证流程
-- `verify-small`：单文件/小修复 → 快速验证
-- 验证失败 → 评估严重程度 → 小问题就地修 / 根本性问题回退到 Step 3(implement)
-
 ## 强制交互规则
 
 > - **禁止**跳过 require→implement→verify 顺序；每个阶段间必须汇报+等待确认
@@ -27,7 +22,7 @@ version: "1.3"
 
 ## 质量模式
 
-从 `.hany/config.json` 的 `quality` 字段读取，默认 `standard`。
+> 详见 `hany-common/procedures/quality_modes.md`
 
 | 模式 | planreview | 验证路由 | 验证循环 | 回退上限 |
 |------|-----------|---------|---------|---------|
@@ -35,17 +30,7 @@ version: "1.3"
 | **standard**（默认） | 必须执行 | 自动判断 | 最多 3 轮 | 最多 2 次 |
 | **minimal** | 跳过 | 默认 verify-small | 最多 1 轮 | 最多 1 次 |
 
-> **编码约束**：读取 `hany-rules/SKILL.md`，11 条规则全程生效。
-
-## 需求文档规范
-
-> **必读**：本文档引用的需求文档格式规范详见 `hany-auto/requirements/需求文档模板.md`。
->
-> 关键规则：
-> - Step 2 阶段：需求文档写入 `docs/hany/requirements/`，摘要引用路径
-> - Step 4.6 归档：必须列出需求文档路径
-> - 恢复检查：Step 0 前检查是否存在 `in_progress` 状态文档
-> - 拆分规则：多子系统时独立需求文档命名 `YYYY-MM-DD-<主题>-<子系统>.md`
+> **编码约束**：读取 `hany-common/rules/rules.md`，11 条规则全程生效。
 
 ## 概览（必读）
 
@@ -73,23 +58,22 @@ version: "1.3"
 | hany-require | `hany-require/SUMMARY.md` | `hany-require/SKILL.md` |
 | hany-planreview | `hany-planreview/SUMMARY.md` | `hany-planreview/SKILL.md` |
 | hany-implement | `hany-implement/SUMMARY.md` | `hany-implement/SKILL.md` |
-| hany-verify-small | —（直接加载） | `hany-verify-small/SKILL.md` |
+| hany-verify-small | `hany-verify-small/SKILL.md`（直接加载） | — |
 | hany-verify-project | `hany-verify-project/SUMMARY.md` | `hany-verify-project/SKILL.md` |
-| hany-rules | —（按规则编号跳读） | `hany-rules/SKILL.md` |
+| hany-rules | `hany-common/rules/rules.md` | — |
 
-## 恢复检查
-
-启动时检查 `docs/hany/` 下是否有未完成的流程记录（需求文档/计划文档/验证报告）。如果有，使用 `AskUserQuestion` 询问：继续上次 / 重新开始。
-
-## 工作流程
+## 概览工作流程
 
 ```
-触发 → 恢复检查 → 先想想看 → 解析用户描述 → 渐进式加载skill → 阶段1：hany-require → 汇报→确认 → 阶段1.5：hany-planreview(评审需求文档) → 确认→进入实现 → 阶段2：hany-implement → 汇报→确认 → 阶段3：智能验证路由 → 验证→修复循环(含错误回退) → 最终确认
+触发 → 恢复检查 → 先想想看 → 解析用户描述 → 渐进式加载skill
+→ 阶段1：hany-require → 汇报→确认
+→ 阶段1.5：hany-planreview → 确认→进入实现
+→ 阶段2：hany-implement → 汇报→确认
+→ 阶段3：智能验证路由 → 验证→修复循环(含错误回退)
+→ 最终确认
 ```
 
 **进度指示**：全流程和每个阶段都显示百分比进度。
-
----
 
 ## Step 0：先想想看 [进度 2%]
 
@@ -114,11 +98,7 @@ version: "1.3"
 
 使用 `AskUserQuestion` 确认：确认开始 / 调整描述 / 取消。
 
----
-
 ## Step 2：阶段 1 — 渐进式加载 hany-require [进度 10-40%]
-
-**渐进式加载策略**：先读摘要了解流程，需要时再读完整 SKILL.md。不一次性加载所有 skill 到上下文。
 
 ### 2.1 加载
 
@@ -135,7 +115,7 @@ version: "1.3"
 
 ### 2.3 拆分后的并行处理
 
-> 如果触发拆分，按公共规则处理（见文件末尾"拆分并行处理规则"）。
+> 如果触发拆分，按公共规则处理（见 `hany-common/procedures/split_parallel.md`）。
 
 ### 2.4 摘要压缩
 
@@ -145,7 +125,7 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 [require 摘要] 需求：[一句话描述]。需求文档：docs/hany/requirements/XXX.md。选中方案：[方案名]。歧义评分：[最终综合分]。待澄清：[剩余标记数]。
 ```
 
-### 2.5 需求文档评审（hany-planreview） [进度 35%]
+## Step 2.5：需求文档评审（hany-planreview） [进度 35%]
 
 **需求文档创建后、进入实现前，自动执行需求评审。**
 
@@ -176,13 +156,11 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 
 #### 2.5.4 摘要压缩
 
-planreview 阶段完成后，用 3 行摘要替代详细内容：
-
 ```
 [planreview 摘要] 评审文档：[文档路径]。发现问题：X 个（高/Y、中/Z、低/W）。优化建议：[关键建议数]。评审结论：通过/有条件通过/不通过。
 ```
 
-### 2.7 阶段过渡确认
+## Step 2.7：阶段过渡确认
 
 使用 `AskUserQuestion` 汇报需求结果 + planreview 评审结果 + 示例原型。确认：进入实现 / 修改需求 / 重新评审 / 暂停。
 
@@ -202,13 +180,7 @@ planreview 阶段完成后，用 3 行摘要替代详细内容：
 
 按 hany-implement 完整流程执行（含 Constitutional 门禁、PRD 故事拆解、Agent 分配、完成前验证门禁），带进度汇报。
 
-### 3.3 拆分后的并行处理
-
-> 如果触发拆分，按公共规则处理（见文件末尾"拆分并行处理规则"）。
-
-### 3.4 摘要压缩
-
-implement 阶段完成后，用 3 行摘要替代详细内容：
+### 3.3 摘要压缩
 
 ```
 [implement 摘要] 变更文件：[清单]。计划文档：docs/hany/plans/XXX.md。状态：完成/部分完成。验收通过：[X/Y故事]。
@@ -226,8 +198,6 @@ implement 阶段完成后，用 3 行摘要替代详细内容：
 
 **根据变更范围自动选择 verify-small 或 verify-project。**
 
-分析 `git diff` 和变更文件清单，判断验证路径：
-
 | 条件 | 验证路径 |
 |------|---------|
 | 单文件变更 + 小修复（<50行） | verify-small |
@@ -240,11 +210,7 @@ implement 阶段完成后，用 3 行摘要替代详细内容：
 
 ### 4.2 渐进式加载
 
-**verify-small 路径**：
-```
-直接加载 `hany-verify-small/SKILL.md`（~100 token）。
-Verify 阶段完成后，用 3 行摘要替代。
-```
+**verify-small 路径**：直接加载 `hany-verify-small/SKILL.md`（~100 token）。
 
 **verify-project 路径**：
 ```
@@ -262,60 +228,13 @@ Verify 阶段完成后，用 3 行摘要替代。
 
 ### 4.4 拆分后的并行处理
 
-> 如果触发拆分，按公共规则处理（见文件末尾"拆分并行处理规则"）。
+> 如果触发拆分，按公共规则处理（见 `hany-common/procedures/split_parallel.md`）。
 
 ### 4.5 验证/修复循环 + 错误回退
 
-```
-验证 → 发现问题 → 评估严重程度
-  ├── 小问题（编译错误/逻辑小错/边界遗漏）→ 就地修复 → 重新验证
-  ├── 根本性问题（架构偏差/需求理解错误/多模块联动错误）→ 回退到 Step 3(re-implement)
-  └── 全部通过 → 质疑审查 → 进入最终汇报
-```
+> 详见 `hany-common/procedures/error_backoff.md`
 
 每轮循环汇报：`[验证循环 第X轮] 路由：verify-small/verify-project。通过：X项，失败：Y项`
-
-#### 4.5.1 错误分类标准
-
-| 类型 | 判断标准 | 处理方式 |
-|------|---------|---------|
-| 小问题 | 单点修复、不影响架构、无连锁反应 | 就地修复，继续验证 |
-| 根本性问题 | 需求理解偏差、架构设计不合理、多模块联动失败 | 回退到 Step 3 |
-| 需求级问题 | 需求本身有误/遗漏/矛盾 | 回退到 Step 2(hany-require) |
-
-#### 4.5.2 回退到 Step 3 (re-implement)
-
-**触发条件**：验证发现根本性问题，小修无法解决。
-
-1. 整理问题清单 + 根因分析，汇报给用户
-2. 用 `AskUserQuestion` 确认：回退到实现 / 跳过问题 / 暂停
-3. 确认回退 → 读取原计划文档 + 验证报告 → 重新进入 Step 3(hany-implement)
-4. re-implement 完成后 → 重新进入 Step 4 验证
-
-**回退限制**：
-- strict 模式：无上限，必须全部解决
-- standard 模式：最多回退 2 次，第 3 次用 `AskUserQuestion` 让用户决定
-- minimal 模式：最多回退 1 次，之后用 `AskUserQuestion` 让用户决定
-
-#### 4.5.3 回退到 Step 2 (re-require)
-
-**触发条件**：验证发现需求本身有问题（不是实现问题，是需求文档本身的错误/遗漏）。
-
-1. 整理需求问题清单
-2. 用 `AskUserQuestion` 确认：重新进入需求确认 / 修改需求文档 / 暂停
-3. 确认 → 重新进入 Step 2(hany-require)，从问题点开始
-
-#### 4.5.4 验证路由升级
-
-如果初始走 verify-small 但发现的问题超出了小修复范围：
-
-```
-verify-small → 发现根本性问题？
-  ├── 是 → 自动升级到 verify-project，重新执行完整验证
-  └── 否 → 继续 verify-small 循环
-```
-
-> 升级时用 `AskUserQuestion` 通知用户：verify-small 发现超出范围的问题，自动升级到 verify-project。
 
 ### 4.6 最终汇报
 
@@ -340,16 +259,11 @@ verify-small → 发现根本性问题？
 ### 发现并修复的问题
 [问题列表，含根因分析]
 
-### 优化建议
-[如有]
-
 ### 归档
 - 需求：`docs/hany/requirements/...`
 - 计划：`docs/hany/plans/...`
 - 报告：`docs/hany/archive/...`
 ```
-
----
 
 ## 渐进式加载策略
 
@@ -370,14 +284,3 @@ verify-small → 发现根本性问题？
 | 简单 | 每阶段 1 次 | 跳过 | verify-small | 快速收敛 | 直接实现 | 1 轮 | 1 次 |
 | 中等 | 每阶段 1 次 | 必须 | 自动判断 | 正常三轮 | 2-3 Agent | 3 轮 | 2 次 |
 | 复杂 | 每阶段 2-3 次 | 必须+深度评审 | verify-project | 深度多轮+挑战者 | 多 Agent | 不限 | 不限 |
-
----
-
-## 拆分并行处理规则（公共）
-
-需求拆分为多个子系统后，各阶段统一遵循：
-
-1. 每个子系统独立进入对应阶段流程
-2. 无依赖的子系统用 Agent/Team **并行执行**
-3. 有依赖的子系统按依赖顺序执行（被依赖方先完成）
-4. 统一进度汇报：`[阶段进度] 子系统A：X% / 子系统B：Y% / 总体：Z%`
