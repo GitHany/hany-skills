@@ -75,7 +75,7 @@ version: "1.3"
 | hany-implement | `hany-implement/SUMMARY.md` | `hany-implement/SKILL.md` |
 | hany-verify-small | —（直接加载） | `hany-verify-small/SKILL.md` |
 | hany-verify-project | `hany-verify-project/SUMMARY.md` | `hany-verify-project/SKILL.md` |
-| hany-rules | —（太短，直接读） | `hany-rules/SKILL.md` |
+| hany-rules | —（按规则编号跳读） | `hany-rules/SKILL.md` |
 
 ## 恢复检查
 
