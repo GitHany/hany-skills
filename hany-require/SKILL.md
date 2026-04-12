@@ -237,9 +237,14 @@ status: in_progress  # 完成后改为 completed
 
 ## Step 9：需求持久化 [进度 75%]
 
-写入 `docs/hany/requirements/YYYY-MM-DD-<主题>.md`，含需求文档、选中方案、歧义评分最终结果。
+**自动写入，无需确认。**
 
-用 `AskUserQuestion` 确认：确认写入 / 修改 / 跳过。
+检查通过后直接写入 `docs/hany/requirements/YYYY-MM-DD-<主题>.md`，含需求文档、选中方案、歧义评分最终结果。
+
+写入后输出：
+```
+[require 摘要] 需求：[一句话描述]。需求文档：docs/hany/requirements/XXX.md。选中方案：[方案名]。歧义评分：[最终综合分]。待澄清：[剩余标记数]。
+```
 
 ## Step 10：输出示例原型 [进度 85%]
 

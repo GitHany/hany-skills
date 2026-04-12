@@ -103,8 +103,8 @@ created: [日期]
 ## 触发时机
 
 根据 `hany-require/SKILL.md` Step 9：
-- 需求澄清完成后写入 `docs/hany/requirements/`
-- 使用 `AskUserQuestion` 确认写入
+- 需求澄清完成后**自动写入** `docs/hany/requirements/`
+- 无需确认，直接写入后输出摘要
 
 ## Skill 协同规范
 
