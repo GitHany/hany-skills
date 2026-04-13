@@ -9,6 +9,8 @@ version: "1.0"
 
 **触发方式：`/hany:planreview`**
 
+> **调用方**：可独立触发 `/hany:planreview`，也可由 `hany-auto` Step 2.5 自动调用。
+
 > **核心原则：不盲从，敢质疑。用批判性思维审视每一条需求，识别逻辑漏洞、边界不清、不可行之处，然后给出优化建议。**
 
 > **编码约束**：读取 `hany-common/rules/rules.md`，11 条规则全程生效。

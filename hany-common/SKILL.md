@@ -16,10 +16,14 @@ hany-common/
 ├── SKILL.md                          # 本文件：公共层索引
 ├── rules/
 │   └── rules.md                      # 11 条编码规则（所有 skill 全程生效）
-└── procedures/
-    ├── quality_modes.md              # 质量模式配置（strict/standard/minimal）
-    ├── split_parallel.md             # 拆分并行处理公共规则
-    └── error_backoff.md              # 验证修复循环与错误回退规则
+├── templates/
+│   └── 需求文档模板.md                # 需求文档标准格式模板（所有 skill 共享）
+├── procedures/
+│   ├── quality_modes.md              # 质量模式配置（strict/standard/minimal）
+│   ├── split_parallel.md             # 拆分并行处理公共规则
+│   ├── error_backoff.md              # 验证修复循环与错误回退规则
+│   ├── ambiguity_scoring.md          # 歧义评分公共模块
+│   └── entity_tracking.md            # 实体追踪公共模块
 ```
 
 ## 共享规则
@@ -32,9 +36,12 @@ hany-common/
 
 | 文件 | 内容 | 被引用 |
 |------|------|--------|
+| `templates/需求文档模板.md` | 需求文档标准格式模板 | require, auto |
 | `procedures/quality_modes.md` | strict/standard/minimal 模式定义 | 所有 skill |
 | `procedures/split_parallel.md` | 拆分后并行处理规则 | require, implement, verify-project |
 | `procedures/error_backoff.md` | 验证循环+回退规则 | verify-project, auto |
+| `procedures/ambiguity_scoring.md` | 歧义评分（维度定义+阈值+公式） | hany-require, hany-question |
+| `procedures/entity_tracking.md` | 实体追踪（提取+分类+稳定性） | hany-require, hany-question |
 
 ## 按需加载
 

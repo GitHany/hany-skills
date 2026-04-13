@@ -41,11 +41,21 @@ version: "1.3"
 >
 > ⚠️ **铁律：禁止一次性读取子 skill 的完整 SKILL.md。** 只读 SUMMARY.md + 当前 Step。
 
+### 标准加载策略
+
+> 各阶段加载子 skill 时统一执行：
+> 1. 先读 `<子skill>/SUMMARY.md`（~300 token）了解全局
+> 2. 进入具体 Step 时，用 Read(offset/limit) 跳读 `<子skill>/SKILL.md` 对应章节
+> 3. ⚠️ 禁止一次性读取整个 SKILL.md
+>
+> 下文各阶段以「按标准加载策略加载 XXX」引用此规则。
+
 ### 快速参考卡
 
 | 阶段 | 调用的子 skill | 加载方式 | 确认节点 |
 |------|--------------|---------|---------|
 | Step 0-1 | — | 直接执行 | AskUserQuestion |
+| Step 1.5 | hany-question（可选） | 直接加载 | 1.6 过渡确认 |
 | Step 2 | hany-require | SUMMARY.md → 按需读 SKILL.md | 2.5 planreview |
 | Step 2.5 | hany-planreview | SUMMARY.md → 按需读 SKILL.md | 2.7 过渡确认 |
 | Step 3 | hany-implement | SUMMARY.md → 按需读 SKILL.md | 3.5 过渡确认 |
@@ -56,9 +66,10 @@ version: "1.3"
 | 子 skill | 摘要文件 | 完整手册 |
 |----------|---------|---------|
 | hany-require | `hany-require/SUMMARY.md` | `hany-require/SKILL.md` |
+| hany-question | `hany-question/SUMMARY.md` | `hany-question/SKILL.md` |
 | hany-planreview | `hany-planreview/SUMMARY.md` | `hany-planreview/SKILL.md` |
 | hany-implement | `hany-implement/SUMMARY.md` | `hany-implement/SKILL.md` |
-| hany-verify-small | `hany-verify-small/SKILL.md`（直接加载） | — |
+| hany-verify-small | `hany-verify-small/SUMMARY.md` | `hany-verify-small/SKILL.md` |
 | hany-verify-project | `hany-verify-project/SUMMARY.md` | `hany-verify-project/SKILL.md` |
 | hany-rules | `hany-common/rules/rules.md` | — |
 
@@ -89,15 +100,21 @@ version: "1.3"
 
 使用 `AskUserQuestion` 确认：确认开始 / 调整描述 / 取消。
 
+## Step 1.5：问题澄清（可选）[进度 7%]
+
+**仅在用户描述模糊时触发**（< 10 字或含"处理一下"/"优化一下"/"改改"/"差不多"）。
+
+1. 加载 `hany-question/SKILL.md`，按质量模式执行问题澄清流程
+2. 歧义评分达标后生成问题草稿
+3. 用 `AskUserQuestion` 确认：草稿准确 → 进入 Step 2 / 需要修改 → 继续追问 / 跳过 → 直接进入 Step 2
+
+**不触发条件**：用户描述已包含明确的目标、输入、输出 → 直接进入 Step 2。
+
 ## Step 2：阶段 1 — 渐进式加载 hany-require [进度 10-40%]
 
 ### 2.1 加载
 
-```
-先读 `hany-require/SUMMARY.md`（~300 token）了解全局。
-然后进入 Step N 时，用 Read(offset/limit) 跳读 `hany-require/SKILL.md` 对应章节。
-⚠️ 禁止一次性读取整个 SKILL.md。
-```
+按标准加载策略加载 `hany-require`。
 
 ### 2.2 自动执行
 
@@ -124,11 +141,7 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 
 #### 2.5.1 加载
 
-```
-先读 `hany-planreview/SUMMARY.md`（~300 token）了解全局。
-然后用 Read(offset/limit) 跳读 `hany-planreview/SKILL.md` 对应章节。
-⚠️ 禁止一次性读取整个 SKILL.md。
-```
+按标准加载策略加载 `hany-planreview`。
 
 #### 2.5.2 执行
 
@@ -161,11 +174,7 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 
 ### 3.1 加载
 
-```
-先读 `hany-implement/SUMMARY.md`（~300 token）了解全局。
-然后进入 Step N 时，用 Read(offset/limit) 跳读 `hany-implement/SKILL.md` 对应章节。
-⚠️ 禁止一次性读取整个 SKILL.md。Implement 阶段完成后，用 3 行摘要替代。
-```
+按标准加载策略加载 `hany-implement`。阶段完成后，用 3 行摘要替代。
 
 ### 3.2 自动执行
 
@@ -203,12 +212,7 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 
 **verify-small 路径**：直接加载 `hany-verify-small/SKILL.md`（~100 token）。
 
-**verify-project 路径**：
-```
-先读 `hany-verify-project/SUMMARY.md`（~300 token）了解全局。
-然后进入 Step N 时，用 Read(offset/limit) 跳读 `hany-verify-project/SKILL.md` 对应章节。
-⚠️ 禁止一次性读取整个 SKILL.md。
-```
+**verify-project 路径**：按标准加载策略加载 `hany-verify-project`。
 
 ### 4.3 自动执行
 

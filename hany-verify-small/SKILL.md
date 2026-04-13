@@ -9,6 +9,8 @@ version: "1.0"
 
 **触发方式：`/hany:verify-small`**
 
+> **调用方**：可独立触发 `/hany:verify-small`，也可由 `hany-auto` Step 4 自动调用。
+
 > 适用场景：小 bug 修复、单个文件修改、紧急热修复。
 > 不适用：大功能改动、架构调整、多文件修改（请用 `/hany:verify-project`）
 
@@ -27,6 +29,8 @@ version: "1.0"
 ---
 
 ## Step 0：先想想看 [进度 10%]
+
+> ⚠️ **若由 `hany-auto` 调用，跳过此步**（auto 已完成初步思考）。
 
 **触发后，先思考再执行。**
 

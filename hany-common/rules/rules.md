@@ -17,13 +17,9 @@ version: "1.2"
 
 ## 质量模式
 
-从 `.hany/config.json` 的 `quality` 字段读取，默认 `standard`。
+> 详见 `hany-common/procedures/quality_modes.md`
 
-| 模式 | 规则执行力度 |
-|------|------------|
-| **strict** | 全部 11 条强制检查，违规即中断 |
-| **standard**（默认） | 全部 11 条检查，违规需修正后继续 |
-| **minimal** | 核心规则（1/2/6/9）强制，其余建议遵守 |
+从 `.hany/config.json` 的 `quality` 字段读取，默认 `standard`。
 
 ---
 
