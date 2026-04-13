@@ -24,12 +24,6 @@ version: "1.3"
 
 > 详见 `hany-common/procedures/quality_modes.md`
 
-| 模式 | planreview | 验证路由 | 验证循环 | 回退上限 |
-|------|-----------|---------|---------|---------|
-| **strict** | 必须执行 | 默认 verify-project | 无上限 | 无上限 |
-| **standard**（默认） | 必须执行 | 自动判断 | 最多 3 轮 | 最多 2 次 |
-| **minimal** | 跳过 | 默认 verify-small | 最多 1 轮 | 最多 1 次 |
-
 > **编码约束**：读取 `hany-common/rules/rules.md`，11 条规则全程生效。
 
 ## 概览（必读）
