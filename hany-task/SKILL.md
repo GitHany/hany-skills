@@ -1,6 +1,8 @@
 ---
 name: hany-task
-description: Use when assigning tasks to AI Agents to check if the distribution is reasonable, including workload balance, priority logic, and dependency handling.
+description: "AI Agent 任务分配检查。触发：/hany:task。量化评估任务分配的合理性，包括负载均衡、优先级逻辑和依赖关系处理。"
+author: hany
+version: "1.0"
 ---
 
 # hany-task — AI Agent 任务分配检查助手

@@ -23,7 +23,10 @@ hany-common/
 │   ├── split_parallel.md             # 拆分并行处理公共规则
 │   ├── error_backoff.md              # 验证修复循环与错误回退规则
 │   ├── ambiguity_scoring.md          # 歧义评分公共模块
-│   └── entity_tracking.md            # 实体追踪公共模块
+│   ├── entity_tracking.md            # 实体追踪公共模块
+│   ├── interaction_rules.md          # 强制交互规则统一版本
+│   ├── security_checklist.md         # 安全检查10项
+│   └── quick_reference.md            # 快速参考卡统一模板
 ```
 
 ## 共享规则
@@ -42,6 +45,9 @@ hany-common/
 | `procedures/error_backoff.md` | 验证循环+回退规则 | verify-project, auto |
 | `procedures/ambiguity_scoring.md` | 歧义评分（维度定义+阈值+公式） | hany-require, hany-question |
 | `procedures/entity_tracking.md` | 实体追踪（提取+分类+稳定性） | hany-require, hany-question |
+| `procedures/interaction_rules.md` | 强制交互规则统一版本 | 所有 skill |
+| `procedures/security_checklist.md` | 安全检查10项 | verify-project |
+| `procedures/quick_reference.md` | 快速参考卡统一模板 | 各 skill |
 
 ## 按需加载
 

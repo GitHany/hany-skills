@@ -47,7 +47,7 @@ version: "1.1"
 | Step 6 | 需求去重精简 | AskUserQuestion |
 | Step 7 | 多方案对比 | AskUserQuestion |
 | Step 8 | 需求自检 | — |
-| Step 9 | 需求持久化到 docs/hany/requirements/ | AskUserQuestion |
+| Step 9 | 需求持久化到 docs/hany/requirements/ | — |
 | Step 10 | 输出示例原型（代码+技术说明+设计思路） | — |
 | Step 11 | 最终确认，引导触发 /hany:implement | AskUserQuestion |
 
@@ -166,7 +166,7 @@ version: "1.1"
 
 基于 Step 1 发现反问：\"看到你用了 X 技术，这次需要用吗？\"
 
-### 5.6 第三轮+：挑战者模式
+### 5.6 挑战者模式（第 4 轮+）
 
 | 轮次 | 模式 | 提问方式 |
 |------|------|---------|
