@@ -258,4 +258,4 @@ Confidence: [高/中/低]
 2. 列出变更文件清单
 3. 用 `AskUserQuestion` 确认：确认完成 / 有遗漏 / 需要调整
 
-> 确认通过：\"实现完成。请触发 `/hany:verify` 进行检查测试。\"
+> 确认通过：由 hany-auto 编排器自动路由至验证阶段（verify-small / verify-project）。

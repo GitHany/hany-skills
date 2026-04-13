@@ -11,7 +11,7 @@ version: "1.3"
 
 > **核心原则：用户给一个描述，自动走完需求确认→实现→验证全流程。渐进式加载 skill 减少上下文膨胀。关键节点汇报，用户可随时介入。**
 
-**快速路径**：简单任务自动判断复杂度后走 minimal 模式。具体步骤：`Step 0→1→2(require)→2.5(planreview: 简单任务跳过)→2.7确认→3(implement)→3.5确认→4(智能验证路由)→4.6`。跳过 Constitutional 门禁、计划自检、安全检查、回归验证和边界检查。
+**快速路径**：简单任务自动判断复杂度后走 minimal 模式。具体步骤：`Step 0→1→2(require)→2.5(planreview: 简单任务跳过)→2.7(任务分配检查: 可选)→2.8(过渡确认)→3(implement)→3.5(过渡确认)→4(智能验证路由)→4.6`。跳过 Constitutional 门禁、计划自检、安全检查、回归验证和边界检查。
 
 ## 强制交互规则
 
@@ -57,7 +57,9 @@ version: "1.3"
 | Step 0-1 | — | 直接执行 | AskUserQuestion |
 | Step 1.5 | hany-question（可选） | 直接加载 | 1.6 过渡确认 |
 | Step 2 | hany-require | SUMMARY.md → 按需读 SKILL.md | 2.5 planreview |
-| Step 2.5 | hany-planreview | SUMMARY.md → 按需读 SKILL.md | 2.7 过渡确认 |
+| Step 2.5 | hany-planreview | SUMMARY.md → 按需读 SKILL.md | 2.7 task 检查 |
+| Step 2.7 | hany-task（可选） | 直接加载 | 2.8 过渡确认 |
+| Step 2.8 | — | — | 过渡确认（含 task 结果） |
 | Step 3 | hany-implement | SUMMARY.md → 按需读 SKILL.md | 3.5 过渡确认 |
 | Step 4 | 智能路由：verify-small / verify-project | 按路由加载 | 验证循环+最终确认 |
 
@@ -71,6 +73,7 @@ version: "1.3"
 | hany-implement | `hany-implement/SUMMARY.md` | `hany-implement/SKILL.md` |
 | hany-verify-small | `hany-verify-small/SUMMARY.md` | `hany-verify-small/SKILL.md` |
 | hany-verify-project | `hany-verify-project/SUMMARY.md` | `hany-verify-project/SKILL.md` |
+| hany-task | `hany-task/SKILL.md` | — |
 | hany-rules | `hany-common/rules/rules.md` | — |
 
 ## 概览工作流程
@@ -164,13 +167,47 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 [planreview 摘要] 评审文档：[文档路径]。发现问题：X 个（高/Y、中/Z、低/W）。优化建议：[关键建议数]。评审结论：通过/有条件通过/不通过。
 ```
 
-## Step 2.7：阶段过渡确认
+## Step 2.7：任务分配检查（可选）[进度 38%]
 
-使用 `AskUserQuestion` 汇报需求结果 + planreview 评审结果 + 示例原型。确认：进入实现 / 修改需求 / 重新评审 / 暂停。
+**仅在涉及多 Agent 协作或任务分配场景时触发**（需求中包含"分配"、"协作"、"多Agent"、"任务调度"等关键词）。
+
+### 2.7.1 加载
+
+直接加载 `hany-task/SKILL.md`（~100 token）。
+
+### 2.7.2 执行
+
+按 hany-task 流程执行任务分配检查：
+1. 收集 Agent 列表、任务列表、任务属性
+2. 工作负载分析（极差、方差）
+3. 依赖关系与时序分析（关键路径、阻塞点）
+4. 优先级评估
+5. 生成优化建议
+
+### 2.7.3 检查结果处理
+
+```
+检查 → 发现问题？
+  ├── 严重失衡/阻塞 → 用 AskUserQuestion 确认：优化分配方案 / 重新设计任务结构
+  ├── 轻微问题 → 汇报 + 用 AskUserQuestion 确认：接受当前方案 / 调整优化
+  └── 无问题 → 自动进入 Step 2.8
+```
+
+### 2.7.4 摘要压缩
+
+```
+[hany-task 摘要] 检查 Agent 数：N。任务数：M。负载均衡：{均衡/轻微失衡/严重失衡}。关键路径：{路径描述}。优化建议：{建议数}。
+```
 
 ---
 
-## Step 3：阶段 2 — 渐进式加载 hany-implement [进度 40-75%]
+## Step 2.8：阶段过渡确认
+
+使用 `AskUserQuestion` 汇报需求结果 + planreview 评审结果 + task 检查结果（如有）+ 示例原型。确认：进入实现 / 修改需求 / 重新评审 / 暂停。
+
+---
+
+## Step 3：阶段 2 — 渐进式加载 hany-implement [进度 42-75%]
 
 ### 3.1 加载
 
@@ -239,13 +276,19 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 ### 阶段 1：需求确认 ✅
 [需求摘要]
 
-### 阶段 1.5：需求评审 ✅/⚠️
+### 阶段 1.5：问题澄清 ✅/⏭️（可选）
+[question 草稿摘要，仅在触发时显示]
+
+### 阶段 2：需求评审 ✅/⚠️
 [planreview 评审摘要]
 
-### 阶段 2：详细实现 ✅
+### 阶段 2.5：任务分配检查 ✅/⏭️（可选）
+[hany-task 检查摘要，仅在触发时显示]
+
+### 阶段 3：详细实现 ✅
 [实现摘要]
 
-### 阶段 3：检查测试 ✅/❌
+### 阶段 4：检查测试 ✅/❌
 [验证摘要，含路由：verify-small/verify-project]
 
 ### 回退记录（如有）
