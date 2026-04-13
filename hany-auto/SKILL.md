@@ -64,16 +64,7 @@ version: "1.3"
 
 ## 概览工作流程
 
-```
-触发 → 恢复检查 → 先想想看 → 解析用户描述 → 渐进式加载skill
-→ 阶段1：hany-require → 汇报→确认
-→ 阶段1.5：hany-planreview → 确认→进入实现
-→ 阶段2：hany-implement → 汇报→确认
-→ 阶段3：智能验证路由 → 验证→修复循环(含错误回退)
-→ 最终确认
-```
-
-**进度指示**：全流程和每个阶段都显示百分比进度。
+见上方快速参考卡（阶段列即流程）。**进度指示**：全流程和每个阶段都显示百分比进度。
 
 ## Step 0：先想想看 [进度 2%]
 
@@ -267,20 +258,4 @@ require 阶段完成后，用 3 行摘要替代详细内容：
 
 ## 渐进式加载策略
 
-| 阶段 | 初始加载 | 执行时加载 | 压缩 |
-|------|---------|-----------|------|
-| Step 2 (require) | SUMMARY.md（~300 token） | 按需读 SKILL.md 对应章节 | 完成后用 3 行摘要替代 |
-| Step 2.5 (planreview) | SUMMARY.md（~300 token） | 按需读 SKILL.md 对应章节 | 完成后用 3 行摘要替代 |
-| Step 3 (implement) | SUMMARY.md（~300 token） | 按需读 SKILL.md 对应章节 | 完成后用 3 行摘要替代 |
-| Step 4 (verify-small) | 直接加载（~100 token） | 直接加载 SKILL.md | - |
-| Step 4 (verify-project) | SUMMARY.md（~300 token） | 按需读 SKILL.md 对应章节 | 完成后用 3 行摘要替代 |
-
-> **Token 优化**：每个阶段先加载 ~300 token 的摘要文件，仅在执行具体步骤时按需读取完整 SKILL.md 的对应章节。Simple 模式跳过 planreview，verify-small 路径直接加载 ~100 token，总初始加载约 700-1200 token。
-
-## 复杂度自适应
-
-| 复杂度 | 确认次数 | planreview | 验证路由 | 提问深度 | 并行度 | 验证循环 | 回退 |
-|--------|---------|-----------|---------|---------|--------|---------|------|
-| 简单 | 每阶段 1 次 | 跳过 | verify-small | 快速收敛 | 直接实现 | 1 轮 | 1 次 |
-| 中等 | 每阶段 1 次 | 必须 | 自动判断 | 正常三轮 | 2-3 Agent | 3 轮 | 2 次 |
-| 复杂 | 每阶段 2-3 次 | 必须+深度评审 | verify-project | 深度多轮+挑战者 | 多 Agent | 不限 | 不限 |
+> Token 优化：每个阶段先加载 ~300 token 的摘要文件，仅在执行具体步骤时按需读取完整 SKILL.md 的对应章节。Simple 模式跳过 planreview，verify-small 路径直接加载 ~100 token。
